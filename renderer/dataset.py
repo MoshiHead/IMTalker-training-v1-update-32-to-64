@@ -119,11 +119,12 @@ class TFDataset(Dataset):
 
         clip_dirs = sorted([p for p in video_root.iterdir() if p.is_dir()])
         
-        # Simple split strategy
+        # Simple split strategy — train uses 90%, val uses last 10%
+        n_val = max(1, int(len(clip_dirs) * 0.1))
         if self.split == 'train':
-            clip_dirs = clip_dirs[:500] 
+            clip_dirs = clip_dirs[:-n_val]
         else:
-            clip_dirs = clip_dirs[500:] # Or whatever split logic you prefer
+            clip_dirs = clip_dirs[-n_val:]
 
         meta_list = []
         for clip_path in tqdm(clip_dirs, desc=f'Processing {self.root_path.name}'):
